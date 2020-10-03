@@ -1,3 +1,13 @@
+The purpose of this project was to get to know the React workflow. Also learned how to use Javascript in the process.
+Will further develop this beyond the original tutorial over time in order to be able to write more advanced projects.
+Currenty hosted on http://meme-werld.fun, so you can check it out!
+
+##Plans:
+*Full redesign of UI
+*Option to choose between 2 Player or AI
+*Smart Tic-Tac-Toe AI algorithm
+*The additional challenges listed at the bottom of https://reactjs.org/tutorial/tutorial.html
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
