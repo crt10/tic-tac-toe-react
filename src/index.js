@@ -2,38 +2,102 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-function Square(props) {
-  return (
-    <button
-    className="square"
-    onClick={props.onClick}
-    >
-      {props.value}
-    </button>
-  );
+class Square extends React.Component {
+  renderValue() {
+    switch(this.props.value) {
+      case 'X':
+        return (
+          <div className="space">
+            <div style={{
+              position: 'absolute',
+              width: '175px',
+              height: '15px',
+              top: '50%',
+              left: '50%',
+              transformOrigin: 'top left',
+              transform: 'rotate(45deg) translate(-50%, -50%)',
+              borderRadius: '5px',
+              background: 'rgb(255, 250, 220)',}} />
+            <div style={{
+              position: 'absolute',
+              width: '175px',
+              height: '15px',
+              top: '50%',
+              left: '50%',
+              transformOrigin: 'top left',
+              transform: 'rotate(-45deg) translate(-50%, -50%)',
+              borderRadius: '5px',
+              background: 'rgb(255, 250, 220)',}} />
+          </div>
+        )
+        break;
+      case 'O':
+        return (
+          <div className="space">
+            <div style={{
+              position: 'absolute',
+              width: '120px',
+              height: '120px',
+              border: '15px solid rgb(255, 250, 220)',
+              borderRadius: '120px',
+              top: '50%',
+              left: '50%',
+              transformOrigin: 'top left',
+              transform: 'translate(-50%, -50%)',}} />
+          </div>
+        )
+      //   break;
+      // default:
+      //   return (
+      //     <div className="empty"></div>
+      //   )
+    }
+  }
+
+  render() {
+    return (
+      <div
+      className={this.props.name}
+      onClick={this.props.onClick}
+      >
+        {this.renderValue()}
+      </div>
+    );
+  }
 }
-
-
 
 class Board extends React.Component {
   renderSquare(i) {
+    let name = "square";
+    switch(i%3) {
+      case 0:
+        name += " left";
+        break;
+      case 1:
+        name += " middle";
+        break;
+      default:
+        name += " right";
+    }
+
     return (
       <Square
       value={this.props.squares[i]}
       onClick={() => this.props.onClick(i)}
+      name={name}
       />
     );
   }
 
   render() {
     return (
-      <div>
-        <div className="board-row">
+      <div className="board">
+        <div className="board-row line">
           {this.renderSquare(0)}
           {this.renderSquare(1)}
           {this.renderSquare(2)}
         </div>
-        <div className="board-row">
+        <div className="board-row line">
           {this.renderSquare(3)}
           {this.renderSquare(4)}
           {this.renderSquare(5)}
