@@ -1,5 +1,5 @@
 body {
-  font: 14px "Century Gothic", Futura, sans-serif;
+  font: 40px "Trebuchet MS", Helvetica, sans-serif;
   margin: 20px;
   background: #ffc1a4;
 }
@@ -10,18 +10,13 @@ ol, ul {
 
 .game-board {
   width: 600px;
-  height: 600px;
+  height: 620px;
   position: relative;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  transform-origin: center center;
 }
 
 .board {
-  box-sizing: inherit;
-  width: 100%;
-  height: 100%;
+  width: 600px;
+  height: 600px;
 }
 
 .board-row{
@@ -31,9 +26,6 @@ ol, ul {
 .board-row.line{
   height: 33.333333333%;
   border-bottom: 10px solid#2e394d;
-}
-.status {
-  margin-bottom: 10px;
 }
 
 .square {
@@ -45,7 +37,6 @@ ol, ul {
   font-weight: bold;
   line-height: 34px;
   text-align: center;
-  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items:center;
@@ -76,6 +67,18 @@ ol, ul {
   border-radius: 15px;
 }
 
+.empty {
+  position: relative;
+  width: 80%;
+  height: 80%;
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+.empty:hover {
+  background: rgb(255, 250, 220);
+}
+
 .square:focus {
   outline: none;
 }
@@ -85,13 +88,75 @@ ol, ul {
 }
 
 .game {
-  position: relative;
-  resize: both;
-  width: 800px;
+  position: absolute;
+  width: 1200px;
   height: 800px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transform-origin: center center;
   display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.game-info {
-  margin-left: 20px;
+.game-info, .game-score {
+  position: relative;
+  height: 620px;
+  margin: 30px;
+  background: #ffe1b5;
+  border-radius: 15px;
+}
+
+.game-score {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.status, .player-x, .player-draw, .player-o{
+  background: #e47f84;
+  width: 300px;
+  height: 60px;
+  margin: 15px;
+  margin-top: 10px;
+  line-height: 60px;
+  text-align: center;
+  border: 5px solid #2e394d;
+  border-radius: 10px;
+  color: rgb(255, 250, 220);
+}
+
+.player-x, .player-draw, .player-o {
+  
+}
+
+.move-list {
+  margin-top: 30px;
+  color: #2e394d;
+}
+
+.move {
+  background: #e47f84;
+  width: 300px;
+  height: 55px;
+  margin-left: 15px;
+  margin-right: 15px;
+  margin-top: -15px;
+  border: 5px solid #2e394d;
+  border-radius: 10px;
+  line-height: 50px;
+  text-align: center;
+  font-size: 30px;
+  color: rgb(255, 250, 220);
+}
+
+.move:hover {
+  cursor: pointer;
+  background: rgb(255, 250, 220);
+  border-radius: 7px;
+  color: #2e394d;
+  margin-left: 13px;
+  margin-right: 13px;
 }
