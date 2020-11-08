@@ -112,6 +112,28 @@ class Board extends React.Component {
   }
 }
 
+class ModeToggle extends React.Component {
+  render() {
+    let img;
+    let text;
+    if (!this.props.mode) {
+      img = "2p.png";
+      text = "PvP"
+    }
+    else {
+      img = "1p.png";
+      text = "PvC"
+    }
+
+    return (
+      <div className="mode" onClick={this.props.onClick}>
+        <img src={img} alt="" width="50px" height="50px"></img>
+        {text}
+      </div>
+    );
+  }
+}
+
 class Game extends React.Component {
   constructor(props) {
     super(props);
@@ -121,13 +143,14 @@ class Game extends React.Component {
       }],
       stepNumber: 0,
       xIsNext:true,
+      mode: 0, //0 = PvP, 1 = PvC
     };
     this.playerX = 0;
     this.playerO = 0;
     this.playerDraw = 0;
   }
 
-  handleClick(i) {
+  move(i) {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
@@ -145,13 +168,25 @@ class Game extends React.Component {
   }
 
   jumpTo(step) {
-    if (step == this.state.stepNumber) {
+    if (step === this.state.stepNumber) {
       return;
     }
     this.setState({
       stepNumber: step,
       xIsNext: (step % 2) === 0,
     });
+  }
+
+  toggleMode() {
+    this.setState({mode: !this.state.mode});
+  }
+
+  componentDidUpdate() {
+    const history = this.state.history;
+    const current = history[this.state.stepNumber];
+    if (this.state.mode && this.state.xIsNext) {
+      cpuMove(current.squares, this);
+    }
   }
 
   render() {
@@ -162,24 +197,22 @@ class Game extends React.Component {
     const moves = history.map((step, move) => {
       const desc = move ? 'Go to move #' + move : 'Go to Game start';
       return (
-        <div className="move" onClick={() => this.jumpTo(move)}>{desc}</div>
+        <div key={move} className="move" onClick={() => this.jumpTo(move)}>{desc}</div>
       );
     });
 
     let status;
     if (winner) {
       status = 'Winner: ' + winner;
-      switch (winner) {
-        case 'X':
-          this.playerX++;
-          break;
-        case 'O':
-          this.playerO++;
-          break;
+      if (winner === 'X') {
+        this.playerX++;
+      }
+      else if (winner === 'O') {
+        this.playerO++;
       }
     }
     else {
-      if (this.state.stepNumber == 9) {
+      if (this.state.stepNumber === 9) {
         this.playerDraw++;
         status = 'TIE';
       }
@@ -198,12 +231,18 @@ class Game extends React.Component {
         <div className="game-board">
           <Board
             squares={current.squares}
-            onClick={(i) => this.handleClick(i)}
+            onClick={(i) => this.move(i)}
           />
         </div>
         <div className="game-info">
           <div className="status">{status}</div>
           <div className="move-list">{moves}</div>
+        </div>
+        <div className="game-mode">
+          <ModeToggle
+            mode={this.state.mode}
+            onClick={() => this.toggleMode()}
+          />
         </div>
       </div>
     );
@@ -235,4 +274,65 @@ function calculateWinner(squares) {
     }
   }
   return null;
+}
+
+function cpuMove(squares, game) { //CPU = X
+  let space = cpuPotentialWin(squares, 'X', 'O'); //play for CPU win
+  if (space === -1) {
+    space = cpuPotentialWin(squares, 'O', 'X'); //block player win
+    if (space === -1) {
+      let spaces = [0, 2, 6, 8];
+      space = randomSpace(squares, spaces); //play random corner
+      if (space === -1) {
+        spaces = [1, 3, 4, 5, 7];
+        space = randomSpace(squares, spaces); //play any random spot
+      }
+    }
+  }
+  game.move(space);
+}
+
+function cpuPotentialWin(squares, player, player2) {
+  let lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ]
+  for (let i = 0; i < lines.length; i++) {
+    let occ = 0;
+    let space = lines[i][0];
+
+    for (let o = 0; o < lines[i].length; o++) {
+      if (squares[lines[i][o]] === player) {
+        occ++;
+      }
+      else if (squares[lines[i][o]] === player2) {
+        occ = 0;
+        break;
+      }
+      else {
+        space = lines[i][o];
+      }
+    }
+
+    if (occ === 2) {
+      return space;
+    }
+  }
+  return -1;
+}
+
+function randomSpace(squares, spaces) {
+  spaces = spaces.filter(spaces => !squares[spaces]);
+  if (spaces.length) {
+    return spaces[Math.floor(Math.random()*spaces.length)];
+  }
+  else {
+    return -1;
+  }
 }
