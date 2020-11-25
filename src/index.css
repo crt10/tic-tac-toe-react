@@ -41,21 +41,25 @@ ol, ul {
   align-items:center;
 }
 
-.square.left {
+.left {
   border-right: 5px solid #2e394d;
   border-top-left-radius: 15px;
   border-bottom-left-radius: 15px;
 }
 
-.square.middle {
+.middle {
   border-left: 5px solid #2e394d;
   border-right: 5px solid #2e394d;
 }
 
-.square.right {
+.right {
   border-left: 5px solid #2e394d;
   border-top-right-radius: 15px;
   border-bottom-right-radius: 15px;
+}
+
+.winning {
+  background:rgb(255, 250, 220);
 }
 
 .space{
@@ -128,7 +132,7 @@ ol, ul {
   color: #2e394d;
 }
 
-.move {
+.move, .move-current {
   background: #e47f84;
   width: 300px;
   height: 55px;
@@ -141,6 +145,10 @@ ol, ul {
   text-align: center;
   font-size: 30px;
   color: rgb(255, 250, 220);
+}
+
+.move-current {
+  font-weight: bold;
 }
 
 .move:hover {
