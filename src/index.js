@@ -30,7 +30,6 @@ class Square extends React.Component {
               background: 'rgb(255, 250, 220)',}} />
           </div>
         )
-        break;
       case 'O':
         return (
           <div className="space">
@@ -46,7 +45,6 @@ class Square extends React.Component {
               transform: 'translate(-50%, -50%)',}} />
           </div>
         )
-        break;
       default:
         return (
           <div className="empty"></div>
@@ -143,11 +141,29 @@ class ModeToggle extends React.Component {
     }
 
     return (
-      <div className="mode" onClick={this.props.onClick}>
+      <div className="button" onClick={this.props.onClick}>
         <img src={img} alt="" width="50px" height="50px"></img>
         {text}
       </div>
     );
+  }
+}
+
+class ScoreToggle extends React.Component {
+  render() {
+    let text;
+    if (!this.props.sort) {
+      text = "Descending"
+    }
+    else {
+      text = "Ascending"
+    }
+
+    return (
+      <div className="button" onClick={this.props.onClick}>
+        {text}
+      </div>
+    )
   }
 }
 
@@ -161,6 +177,7 @@ class Game extends React.Component {
       stepNumber: 0,
       xIsNext:true,
       mode: 0, //0 = PvP, 1 = PvC
+      sort: 0, //0 = descending, 1 = ascending
     };
     this.playerX = 0;
     this.playerO = 0;
@@ -198,6 +215,24 @@ class Game extends React.Component {
     this.setState({mode: !this.state.mode});
   }
 
+  toggleSort() {
+    this.setState({sort: !this.state.sort})
+  }
+
+  resetGame() {
+    this.setState(
+      {
+        history: this.state.history.slice(0, 1),
+        stepNumber: 0,
+        xIsNext: true,
+        mode: 0
+      }
+    )
+    this.playerX = 0;
+    this.playerO = 0;
+    this.playerDraw = 0;
+  }
+
   componentDidUpdate() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
@@ -207,10 +242,12 @@ class Game extends React.Component {
   }
 
   render() {
+    const content = [];
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
     const moves = history.map((step, move) => {
+      move = ((-1)**!this.state.sort) * ((history.length-1)*this.state.sort - move);
       let position = -1;
       if (move) {
         position = getRecentMove(history[move-1].squares, history[move].squares);
@@ -238,21 +275,27 @@ class Game extends React.Component {
         this.playerX++;
       }
       else if (winningPlayer === 'O') {
-        this.playerO++;
+        this.playerO++
       }
     }
     else {
       if (this.state.stepNumber === 9) {
         this.playerDraw++;
         status = 'TIE';
-        return <div>{alert.show("Alert test")}</div>
+        content.push(<div key={"overlay"}>
+          <div className = "overlay" id = "overlay" onClick={() => document.getElementById("overlay").remove()}>
+            <div className = "message">
+              {"No winners this time\n¯\\_(ツ)_/¯"}
+            </div>
+          </div>
+        </div>)
       }
       else {
         status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
       }
     }
 
-    return (
+    content.push(<React.Fragment key={"game"}>
       <div className="game">
         <div className="game-score">
           <div className="player-x">{'X wins: ' + this.playerX}</div>
@@ -270,13 +313,31 @@ class Game extends React.Component {
           <div className="status">{status}</div>
           <div className="move-list">{moves}</div>
         </div>
+      </div>
+      <div className="game-buttons">
+        <div className="game-score-reset">
+          <div className = "button" onClick={() => this.resetGame()}>
+            {"Reset Game"}
+          </div>
+        </div>
         <div className="game-mode">
           <ModeToggle
             mode={this.state.mode}
             onClick={() => this.toggleMode()}
           />
         </div>
+        <div className="game-move-sort">
+          <ScoreToggle
+            sort={this.state.sort}
+            onClick={() => this.toggleSort()}
+          />
+        </div>
       </div>
+    </React.Fragment>);
+    return (
+      <>
+        {content}
+      </>
     );
   }
 }
@@ -346,7 +407,7 @@ function cpuPotentialWin(squares, player, player2) {
     [2, 5, 8],
     [0, 4, 8],
     [2, 4, 6],
-  ]
+  ];
   for (let i = 0; i < lines.length; i++) {
     let occ = 0;
     let space = lines[i][0];
