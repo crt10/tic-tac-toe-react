@@ -59,7 +59,12 @@ ol, ul {
 }
 
 .winning {
-  background:rgb(255, 250, 220);
+  background:#e47f84;
+  animation-name: blink;
+  animation-duration: 0.15s;
+  animation-delay: 0.5s;
+  animation-iteration-count: 4;
+  animation-fill-mode: forwards;
 }
 
 .space{
@@ -68,6 +73,11 @@ ol, ul {
   height: 80%;
   background: rgb(110, 71, 107);
   border-radius: 15px;
+  opacity: 0%;
+  animation-name: fade;
+  animation-duration: 0.25s;
+  animation-delay: 0.3s;
+  animation-fill-mode: forwards;
 }
 
 .empty {
@@ -80,6 +90,8 @@ ol, ul {
 
 .empty:hover {
   background: rgb(255, 250, 220);
+  animation-name: fade;
+  animation-duration: 0.25s;
 }
 
 .square:focus {
@@ -167,6 +179,7 @@ ol, ul {
   color: #2e394d;
   margin-left: 14px;
   margin-right: 14px;
+  position: relative;
 }
 
 .game-mode {
@@ -247,4 +260,14 @@ ol, ul {
   color: #2e394d;
   border: 5px solid #2e394d;
   background: #ffc1a4;
+}
+
+@keyframes fade {
+  from{opacity: 0%;}
+  to{opacity: 100%;}
+}
+
+@keyframes blink {
+  from{background: #e47f84;}
+  to{background:rgb(255, 250, 220);}
 }

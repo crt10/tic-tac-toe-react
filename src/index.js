@@ -179,6 +179,7 @@ class Game extends React.Component {
       mode: 0, //0 = PvP, 1 = PvC
       sort: 0, //0 = descending, 1 = ascending
     };
+    this.prevStep = -1;
     this.playerX = 0;
     this.playerO = 0;
     this.playerDraw = 0;
@@ -228,6 +229,7 @@ class Game extends React.Component {
         mode: 0
       }
     )
+    this.prevStep = -1;
     this.playerX = 0;
     this.playerO = 0;
     this.playerDraw = 0;
@@ -271,24 +273,28 @@ class Game extends React.Component {
     if (winner) {
       let winningPlayer = current.squares[winner[0]]
       status = 'Winner: ' + winningPlayer;
-      if (winningPlayer === 'X') {
-        this.playerX++;
-      }
-      else if (winningPlayer === 'O') {
-        this.playerO++
+      if (this.prevStep !== this.state.stepNumber) {
+        if (winningPlayer === 'X') {
+          this.playerX++;
+        }
+        else if (winningPlayer === 'O') {
+          this.playerO++
+        }
       }
     }
     else {
       if (this.state.stepNumber === 9) {
-        this.playerDraw++;
         status = 'TIE';
-        content.push(<div key={"overlay"}>
-          <div className = "overlay" id = "overlay" onClick={() => document.getElementById("overlay").remove()}>
-            <div className = "message">
-              {"No winners this time\n¯\\_(ツ)_/¯"}
+        if (this.prevStep !== this.state.stepNumber) {
+          this.playerDraw++;
+          content.push(<div key={"overlay"}>
+            <div className = "overlay" id = "overlay" onClick={() => document.getElementById("overlay").remove()}>
+              <div className = "message">
+                {"No winners this time\n¯\\_(ツ)_/¯"}
+              </div>
             </div>
-          </div>
-        </div>)
+          </div>)
+        }
       }
       else {
         status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
@@ -334,6 +340,8 @@ class Game extends React.Component {
         </div>
       </div>
     </React.Fragment>);
+
+    this.prevStep = this.state.stepNumber;
     return (
       <>
         {content}
